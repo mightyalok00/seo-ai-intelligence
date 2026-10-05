@@ -1,12 +1,43 @@
+"""
+Decision Support Engine: SEO Action Prioritization Matrix (Impact vs. Effort).
+
+This module evaluates identified SEO bottlenecks across on-page, structural,
+technical, semantic, and intent dimensions, calculating a prioritized ROI score:
+ROI Score = Expected SEO Ranking Probability Impact (%) / Implementation Effort Score.
+
+Author: Alok Agarwal (mightyalok00)
+License: MIT
+"""
+
 from typing import Dict, Any, List
 
 class RecommendationPrioritizer:
-    """Prioritizes SEO optimization tasks using Expected Impact % / Implementation Effort ROI matrix."""
+    """
+    Ranks SEO remediation tasks using an Expected Impact vs. Implementation Effort ROI matrix.
+    """
 
-    def prioritize(self, features: Dict[str, Any], current_prob: float, intent_data: Dict[str, Any], missing_topics: List[str] = None) -> Dict[str, Any]:
+    def prioritize(
+        self,
+        features: Dict[str, Any],
+        current_prob: float,
+        intent_data: Dict[str, Any],
+        missing_topics: List[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Evaluate feature gaps and prioritize corrective actions by calculated ROI.
+
+        Args:
+            features (Dict[str, Any]): Numerical feature dictionary.
+            current_prob (float): Model predicted Top-10 ranking probability.
+            intent_data (Dict[str, Any]): Search intent classification outcome.
+            missing_topics (List[str], optional): Missing semantic entities from competitors.
+
+        Returns:
+            Dict[str, Any]: Ranked action list with ROI scores and estimated gain projections.
+        """
         candidates = []
 
-        # 1. Search Intent Check
+        # 1. Search Intent Misalignment
         intent_conf = intent_data.get("confidence", 0.8)
         intent_type = intent_data.get("intent", "Informational")
         if intent_conf < 0.75:
@@ -19,7 +50,7 @@ class RecommendationPrioritizer:
                 "effort_score": 2.0
             })
 
-        # 2. Missing Semantic Entities
+        # 2. Missing Competitor Semantic Entities
         if missing_topics and len(missing_topics) > 0:
             top_missing = ", ".join(missing_topics[:4])
             candidates.append({
@@ -31,7 +62,7 @@ class RecommendationPrioritizer:
                 "effort_score": 1.0
             })
 
-        # 3. Keyword in Title
+        # 3. Target Keyword in Title Tag
         if not features.get("keyword_in_title", 0):
             candidates.append({
                 "title": "Include Primary Keyword in <title> Tag",
@@ -42,7 +73,7 @@ class RecommendationPrioritizer:
                 "effort_score": 0.5
             })
 
-        # 4. Keyword in H1 / Single H1
+        # 4. Keyword in H1 / Single H1 Tag
         if not features.get("keyword_in_h1", 0) or not features.get("h1_is_single", 0):
             candidates.append({
                 "title": "Standardize H1 Structure & Inject Primary Keyword",
@@ -53,7 +84,7 @@ class RecommendationPrioritizer:
                 "effort_score": 0.5
             })
 
-        # 5. Schema Markup
+        # 5. Schema.org Structured Data
         if not features.get("has_schema", 0):
             candidates.append({
                 "title": "Implement JSON-LD Schema Structured Data",
@@ -64,7 +95,7 @@ class RecommendationPrioritizer:
                 "effort_score": 0.5
             })
 
-        # 6. Internal Linking
+        # 6. Contextual Internal Linking Graph
         if features.get("internal_links_count", 0) < 5:
             candidates.append({
                 "title": "Build Contextual Internal Links",
@@ -75,7 +106,7 @@ class RecommendationPrioritizer:
                 "effort_score": 2.0
             })
 
-        # 7. Word Count & Depth
+        # 7. Word Count & Content Comprehensiveness
         if features.get("word_count", 0) < 800:
             candidates.append({
                 "title": "Expand Content Depth and Comprehensiveness",
@@ -86,7 +117,7 @@ class RecommendationPrioritizer:
                 "effort_score": 3.0
             })
 
-        # 8. Missing Alt Tags
+        # 8. Missing Image Alt Attributes
         if features.get("image_alt_ratio", 1.0) < 0.9 and features.get("images_count", 0) > 0:
             candidates.append({
                 "title": "Add Descriptive Alt Attributes to Images",
@@ -97,7 +128,7 @@ class RecommendationPrioritizer:
                 "effort_score": 0.5
             })
 
-        # 9. PageSpeed
+        # 9. PageSpeed & Core Web Vitals
         if features.get("page_speed_score", 100) < 70:
             candidates.append({
                 "title": "Optimize Core Web Vitals & Asset Loading",

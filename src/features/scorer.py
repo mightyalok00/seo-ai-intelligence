@@ -1,18 +1,39 @@
+"""
+Deterministic Multi-Pillar SEO Health Scoring Engine.
+
+This module computes a calibrated 0-100 overall SEO score across six weighted
+core pillars (Technical, Content Quality, Search Intent, Semantic Coverage,
+Internal Linking, and Performance).
+
+Author: Alok Agarwal (mightyalok00)
+License: MIT
+"""
+
 from typing import Dict, Any
 
 class SEOScorer:
-    """Calculates granular category scores and an overall SEO Score (0-100)."""
+    """
+    Calculates granular sub-pillar scores and an aggregated overall SEO Score (0-100).
+    """
 
     def calculate_score(self, features: Dict[str, Any], search_intent_match: float = 0.8) -> Dict[str, Any]:
-        """Calculates multi-pillar SEO score:
+        """
+        Calculates multi-pillar SEO score:
         - Technical SEO: 20%
-        - Content Quality: 25%
+        - Content Quality & Depth: 25%
         - Search Intent Alignment: 20%
         - Semantic Coverage: 15%
         - Internal Linking & Structure: 10%
         - Performance & Core Web Vitals: 10%
+
+        Args:
+            features (Dict[str, Any]): Numerical feature dictionary.
+            search_intent_match (float): Confidence score from search intent classifier.
+
+        Returns:
+            Dict[str, Any]: Overall aggregated score and pillar breakdown.
         """
-        # 1. Technical SEO (0-100)
+        # 1. Technical SEO Pillar (0-100)
         tech_score = 100.0
         if not features.get("h1_is_single", 0):
             tech_score -= 15
@@ -26,7 +47,7 @@ class SEOScorer:
             tech_score -= 15
         tech_score = max(20.0, min(100.0, tech_score))
 
-        # 2. Content Quality (0-100)
+        # 2. Content Quality & Depth Pillar (0-100)
         word_count = features.get("word_count", 0)
         if word_count >= 1500:
             content_score = 95.0
@@ -42,7 +63,7 @@ class SEOScorer:
         if features.get("h2_count", 0) >= 3:
             content_score += 5.0
 
-        # Keyword alignment
+        # Keyword inclusion bonuses
         kw_title = features.get("keyword_in_title", 0)
         kw_h1 = features.get("keyword_in_h1", 0)
         if kw_title:
@@ -51,13 +72,13 @@ class SEOScorer:
             content_score += 5.0
         content_score = min(100.0, content_score)
 
-        # 3. Search Intent Alignment (0-100)
+        # 3. Search Intent Alignment Pillar (0-100)
         intent_score = max(0.0, min(100.0, search_intent_match * 100))
 
-        # 4. Semantic Coverage (0-100)
+        # 4. Semantic Coverage Pillar (0-100)
         semantic_score = max(0.0, min(100.0, features.get("semantic_coverage", 0.5) * 100))
 
-        # 5. Internal Linking & Architecture (0-100)
+        # 5. Internal Linking Architecture Pillar (0-100)
         internal_links = features.get("internal_links_count", 0)
         if internal_links >= 10:
             linking_score = 95.0
@@ -68,10 +89,10 @@ class SEOScorer:
         else:
             linking_score = 40.0
 
-        # 6. Performance (0-100)
+        # 6. Performance & Core Web Vitals Pillar (0-100)
         perf_score = float(features.get("page_speed_score", 75.0))
 
-        # Weighted Total
+        # Weighted Aggregation
         overall_score = round(
             (tech_score * 0.20) +
             (content_score * 0.25) +

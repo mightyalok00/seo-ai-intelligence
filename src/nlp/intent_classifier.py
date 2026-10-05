@@ -1,3 +1,18 @@
+"""
+Natural Language Processing: Search Query Intent Classification.
+
+This module provides the `SearchIntentClassifier` class, utilizing a calibrated
+TF-IDF N-gram vectorizer combined with Logistic Regression to classify user search
+queries into four fundamental intent buckets:
+- Informational (e.g. 'what is random forest')
+- Commercial (e.g. 'best seo tools review')
+- Transactional (e.g. 'buy ahrefs pro subscription')
+- Navigational (e.g. 'google search console login')
+
+Author: Alok Agarwal (mightyalok00)
+License: MIT
+"""
+
 import os
 import joblib
 from pathlib import Path
@@ -10,7 +25,7 @@ from src.utils.config import settings
 INTENT_CLASSES = ["Informational", "Commercial", "Transactional", "Navigational"]
 
 SAMPLE_INTENT_DATA = [
-    # Informational
+    # Informational Intent Examples
     ("what is machine learning", "Informational"),
     ("how does random forest work", "Informational"),
     ("python tutorial for beginners", "Informational"),
@@ -23,8 +38,8 @@ SAMPLE_INTENT_DATA = [
     ("pandas dataframe examples", "Informational"),
     ("what is data science", "Informational"),
     ("how to optimize images for web", "Informational"),
-    
-    # Commercial
+
+    # Commercial Intent Examples
     ("best seo tools 2026", "Commercial"),
     ("top python courses online", "Commercial"),
     ("ahrefs vs semrush comparison", "Commercial"),
@@ -36,7 +51,7 @@ SAMPLE_INTENT_DATA = [
     ("chatgpt vs claude for coding review", "Commercial"),
     ("best vps hosting for fastapi", "Commercial"),
 
-    # Transactional
+    # Transactional Intent Examples
     ("buy ahrefs subscription", "Transactional"),
     ("semrush discount coupon code", "Transactional"),
     ("purchase domain name cheap", "Transactional"),
@@ -48,7 +63,7 @@ SAMPLE_INTENT_DATA = [
     ("subscribe to rank tracker pro", "Transactional"),
     ("book technical seo consultation", "Transactional"),
 
-    # Navigational
+    # Navigational Intent Examples
     ("google search console login", "Navigational"),
     ("github login portal", "Navigational"),
     ("semrush dashboard sign in", "Navigational"),
@@ -62,14 +77,20 @@ SAMPLE_INTENT_DATA = [
 ]
 
 class SearchIntentClassifier:
-    """Classifies user search query intent with calibrated probabilities."""
+    """
+    Supervised NLP classifier predicting search query intent with calibrated probabilities.
+    """
 
     def __init__(self, model_path: Path = settings.MODEL_DIR / "intent_model.joblib"):
+        """
+        Initialize classifier and load or train pipeline weights.
+        """
         self.model_path = Path(model_path)
         self.pipeline: Pipeline = None
         self._load_or_train()
 
     def _train_pipeline(self):
+        """Train TF-IDF + Logistic Regression pipeline and serialize to disk."""
         texts, labels = zip(*SAMPLE_INTENT_DATA)
         self.pipeline = Pipeline([
             ("tfidf", TfidfVectorizer(ngram_range=(1, 2), lowercase=True, min_df=1)),
@@ -80,6 +101,7 @@ class SearchIntentClassifier:
         joblib.dump(self.pipeline, self.model_path)
 
     def _load_or_train(self):
+        """Load persisted model artifact or train on cold start."""
         if self.model_path.exists():
             try:
                 self.pipeline = joblib.load(self.model_path)
@@ -89,15 +111,23 @@ class SearchIntentClassifier:
             self._train_pipeline()
 
     def predict(self, keyword: str) -> Dict[str, Any]:
-        """Predict intent for a single keyword with confidence score."""
+        """
+        Predict the search intent category and probability for a single query.
+
+        Args:
+            keyword (str): The search query string.
+
+        Returns:
+            Dict[str, Any]: Keyword, predicted intent, and confidence score (0-1).
+        """
         if not self.pipeline:
             self._train_pipeline()
-        
+
         cleaned = keyword.strip()
         if not cleaned:
-            return {"keyword": "", "intent": "Informational", "confidence": 0.5, "probabilities": {}}
+            return {"keyword": "", "intent": "Informational", "confidence": 0.5}
 
-        # Heuristic rules override for strong signals
+        # Deterministic lexeme matching for unambiguous intent patterns
         lower = cleaned.lower()
         if any(w in lower for w in ["buy", "discount", "coupon", "order", "purchase", "subscribe", "hire"]):
             intent = "Transactional"
@@ -113,7 +143,6 @@ class SearchIntentClassifier:
             conf = 0.96
         else:
             probs = self.pipeline.predict_proba([cleaned])[0]
-            classes = self.pipeline.classes_
             intent = self.pipeline.predict([cleaned])[0]
             conf = float(max(probs))
 
@@ -124,5 +153,13 @@ class SearchIntentClassifier:
         }
 
     def predict_batch(self, keywords: List[str]) -> List[Dict[str, Any]]:
-        """Predict intent for a list of queries."""
+        """
+        Batch classify a list of search queries.
+
+        Args:
+            keywords (List[str]): List of query strings.
+
+        Returns:
+            List[Dict[str, Any]]: List of predicted intent records.
+        """
         return [self.predict(kw) for kw in keywords if kw.strip()]

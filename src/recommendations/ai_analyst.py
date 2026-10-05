@@ -1,3 +1,15 @@
+"""
+Generative AI SEO Analyst & Actionable Remediation Generator.
+
+This module provides the `AISEOAnalyst` class, orchestrating Large Language Model
+prompts across multiple providers (Groq, Google Gemini, OpenAI, Ollama, and local
+expert heuristic engines) to generate deep root-cause explanations, optimized
+title/meta tags, and FAQ structured JSON-LD schemas.
+
+Author: Alok Agarwal (mightyalok00)
+License: MIT
+"""
+
 import os
 import json
 import httpx
@@ -5,9 +17,18 @@ from typing import Dict, Any, List, Optional
 from src.utils.config import settings
 
 class AISEOAnalyst:
-    """Generates LLM-powered SEO root-cause analysis and prioritized content recommendations."""
+    """
+    Generates LLM-powered SEO root-cause analysis and prioritized content recommendations.
+    """
 
     def __init__(self, provider: str = None, api_key: str = None):
+        """
+        Initialize the AI Analyst with preferred LLM provider.
+
+        Args:
+            provider (str, optional): LLM provider ('groq', 'gemini', 'openai', 'ollama', 'rule_based').
+            api_key (str, optional): API authentication key.
+        """
         self.provider = provider or settings.LLM_PROVIDER
         self.groq_key = api_key or settings.GROQ_API_KEY
         self.gemini_key = api_key or settings.GEMINI_API_KEY
@@ -25,9 +46,23 @@ class AISEOAnalyst:
         prioritized_actions: List[Dict[str, Any]],
         missing_topics: List[str] = None
     ) -> Dict[str, Any]:
-        """Generates executive summary, meta suggestions, and heading structures."""
+        """
+        Generates executive summary, meta suggestions, and heading structures.
 
-        # Try live LLM if key is present
+        Args:
+            url (str): Target web page URL.
+            target_keyword (str): Target search query.
+            ranking_probability (float): XGBoost predicted ranking probability.
+            seo_score (float): Calculated overall SEO health score (0-100).
+            intent_data (Dict[str, Any]): Search intent classification outcome.
+            feature_impacts (List[Dict[str, Any]]): TreeSHAP feature contributions.
+            prioritized_actions (List[Dict[str, Any]]): ROI-prioritized remediation actions.
+            missing_topics (List[str], optional): Missing semantic topics from competitors.
+
+        Returns:
+            Dict[str, Any]: Structured AI diagnostic report.
+        """
+        # Attempt live LLM generation if valid API keys exist
         if self.groq_key or self.openai_key:
             try:
                 report = await self._call_openai_compatible_api(
@@ -38,7 +73,7 @@ class AISEOAnalyst:
             except Exception:
                 pass
 
-        # Robust expert rule-based generation
+        # Robust expert rule-based generation fallback
         return self._generate_expert_rule_report(
             url, target_keyword, ranking_probability, seo_score, intent_data, feature_impacts, prioritized_actions, missing_topics
         )
@@ -46,6 +81,7 @@ class AISEOAnalyst:
     async def _call_openai_compatible_api(
         self, url, keyword, prob, score, intent_data, feature_impacts, actions, missing_topics
     ) -> Optional[Dict[str, Any]]:
+        """Call Groq or OpenAI chat completions endpoint."""
         base_url = "https://api.groq.com/openai/v1" if self.groq_key else "https://api.openai.com/v1"
         key = self.groq_key or self.openai_key
         model = "llama-3.3-70b-versatile" if self.groq_key else "gpt-4o-mini"
