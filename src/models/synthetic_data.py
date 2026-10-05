@@ -1,3 +1,14 @@
+"""
+Synthetic Benchmark Dataset Generator for SEO SERP Ranking Models.
+
+This module generates statistically parameterized benchmark datasets modeling
+real-world search engine result page dynamics (authority, content depth, intent
+matching, semantic coverage, and performance signals).
+
+Author: Alok Agarwal (mightyalok00)
+License: MIT
+"""
+
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -22,7 +33,7 @@ FEATURE_COLUMNS = [
 class SEODatasetGenerator:
     """Generates realistic statistical SEO benchmark datasets for ranking prediction."""
 
-    def __init__(self, n_samples: int = 2500, random_seed: int = 42):
+    def __init__(self, n_samples: int = 3000, random_seed: int = 42):
         self.n_samples = n_samples
         self.random_seed = random_seed
 
@@ -67,26 +78,25 @@ class SEODatasetGenerator:
             "image_alt_ratio": np.round(image_alt_ratio, 2)
         })
 
-        # Calculate Ground Truth Logit for Top-10 Ranking Probability
-        # Weighted domain + content + intent + technical
+        # Standardized logit z calculation with centered signals for realistic class balance (~40% positives)
         z = (
-            (df["domain_authority_proxy"] - 45) * 0.045 +
-            np.log1p(df["backlink_count"]) * 0.25 +
-            ((df["word_count"] - 1200) / 1000) * 0.45 +
-            df["keyword_in_title"] * 0.65 +
-            df["keyword_in_h1"] * 0.45 +
-            df["keyword_in_url"] * 0.35 +
-            (df["semantic_coverage"] - 0.5) * 1.8 +
-            (df["search_intent_match"] - 0.5) * 2.2 +
-            np.log1p(df["internal_links_count"]) * 0.30 +
-            ((df["page_speed_score"] - 65) / 30) * 0.35 +
-            df["has_schema"] * 0.30 - 0.8 # baseline offset
+            ((df["domain_authority_proxy"] - 50) / 20) * 0.8 +
+            ((np.log1p(df["backlink_count"]) - 5.0) / 2.0) * 0.7 +
+            ((df["word_count"] - 1400) / 800) * 0.6 +
+            (df["keyword_in_title"] - 0.65) * 1.0 +
+            (df["keyword_in_h1"] - 0.70) * 0.8 +
+            (df["keyword_in_url"] - 0.55) * 0.6 +
+            ((df["semantic_coverage"] - 0.65) / 0.2) * 1.1 +
+            ((df["search_intent_match"] - 0.70) / 0.2) * 1.2 +
+            ((df["internal_links_count"] - 8) / 4.0) * 0.5 +
+            ((df["page_speed_score"] - 72) / 18.0) * 0.5 +
+            (df["has_schema"] - 0.48) * 0.5 - 0.2
         )
 
         probs = 1 / (1 + np.exp(-z))
         noise = np.random.normal(0, 0.08, size=n)
         final_probs = np.clip(probs + noise, 0.01, 0.99)
-        
+
         df["target_probability"] = np.round(final_probs, 4)
         df["is_top_10"] = (final_probs >= 0.50).astype(int)
 

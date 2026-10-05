@@ -1,22 +1,18 @@
 """
 Natural Language Processing: Search Query Intent Classification.
 
-This module provides the `SearchIntentClassifier` class, utilizing a calibrated
-TF-IDF N-gram vectorizer combined with Logistic Regression to classify user search
-queries into four fundamental intent buckets:
-- Informational (e.g. 'what is random forest')
-- Commercial (e.g. 'best seo tools review')
-- Transactional (e.g. 'buy ahrefs pro subscription')
-- Navigational (e.g. 'google search console login')
-
 Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
 import os
-import joblib
+import pickle
+import warnings
 from pathlib import Path
 from typing import List, Dict, Any
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
@@ -77,20 +73,14 @@ SAMPLE_INTENT_DATA = [
 ]
 
 class SearchIntentClassifier:
-    """
-    Supervised NLP classifier predicting search query intent with calibrated probabilities.
-    """
+    """Supervised NLP classifier predicting search query intent with calibrated probabilities."""
 
-    def __init__(self, model_path: Path = settings.MODEL_DIR / "intent_model.joblib"):
-        """
-        Initialize classifier and load or train pipeline weights.
-        """
+    def __init__(self, model_path: Path = settings.MODEL_DIR / "intent_model.pkl"):
         self.model_path = Path(model_path)
         self.pipeline: Pipeline = None
         self._load_or_train()
 
     def _train_pipeline(self):
-        """Train TF-IDF + Logistic Regression pipeline and serialize to disk."""
         texts, labels = zip(*SAMPLE_INTENT_DATA)
         self.pipeline = Pipeline([
             ("tfidf", TfidfVectorizer(ngram_range=(1, 2), lowercase=True, min_df=1)),
@@ -98,28 +88,21 @@ class SearchIntentClassifier:
         ])
         self.pipeline.fit(texts, labels)
         self.model_path.parent.mkdir(parents=True, exist_ok=True)
-        joblib.dump(self.pipeline, self.model_path)
+        with open(self.model_path, "wb") as f:
+            pickle.dump(self.pipeline, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     def _load_or_train(self):
-        """Load persisted model artifact or train on cold start."""
         if self.model_path.exists():
             try:
-                self.pipeline = joblib.load(self.model_path)
+                with open(self.model_path, "rb") as f:
+                    self.pipeline = pickle.load(f)
             except Exception:
                 self._train_pipeline()
         else:
             self._train_pipeline()
 
     def predict(self, keyword: str) -> Dict[str, Any]:
-        """
-        Predict the search intent category and probability for a single query.
-
-        Args:
-            keyword (str): The search query string.
-
-        Returns:
-            Dict[str, Any]: Keyword, predicted intent, and confidence score (0-1).
-        """
+        """Predict the search intent category and probability for a single query."""
         if not self.pipeline:
             self._train_pipeline()
 
@@ -127,7 +110,6 @@ class SearchIntentClassifier:
         if not cleaned:
             return {"keyword": "", "intent": "Informational", "confidence": 0.5}
 
-        # Deterministic lexeme matching for unambiguous intent patterns
         lower = cleaned.lower()
         if any(w in lower for w in ["buy", "discount", "coupon", "order", "purchase", "subscribe", "hire"]):
             intent = "Transactional"
@@ -153,13 +135,5 @@ class SearchIntentClassifier:
         }
 
     def predict_batch(self, keywords: List[str]) -> List[Dict[str, Any]]:
-        """
-        Batch classify a list of search queries.
-
-        Args:
-            keywords (List[str]): List of query strings.
-
-        Returns:
-            List[Dict[str, Any]]: List of predicted intent records.
-        """
+        """Batch classify a list of search queries."""
         return [self.predict(kw) for kw in keywords if kw.strip()]
