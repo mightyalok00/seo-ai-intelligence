@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local Data & SQLite DB
+*.db
+*.sqlite3
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Saved Models & Checkpoints
+models/saved/*
+!models/saved/.gitkeep
+
+# Environment variables
+.env
+
+# IDEs & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
