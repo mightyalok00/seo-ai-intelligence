@@ -427,6 +427,51 @@ if app_mode == "🎯 Real-time URL Audit & Predictor":
                     for m in ai_report.get("recommended_meta_descriptions", []):
                         st.markdown(f"- _{m}_")
 
+                # --- EXPORT REPORT BUTTONS ---
+                st.markdown("---")
+                exp_c1, exp_c2 = st.columns(2)
+                full_export_data = {
+                    "audit_timestamp": datetime.utcnow().isoformat(),
+                    "url": target_url,
+                    "target_keyword": target_keyword,
+                    "seo_score": score_res["overall_seo_score"],
+                    "pillars": score_res["pillars"],
+                    "ranking_probability_pct": prediction["top_10_percentage"],
+                    "traffic_forecast": traffic_forecast,
+                    "search_intent": intent_res,
+                    "prioritized_actions": actions,
+                    "ai_report": ai_report
+                }
+
+                with exp_c1:
+                    st.download_button(
+                        label="📥 Download Full Audit Report (JSON)",
+                        data=json.dumps(full_export_data, indent=2),
+                        file_name=f"seo_audit_{target_keyword.replace(' ', '_')}.json",
+                        mime="application/json",
+                        use_container_width=True
+                    )
+                with exp_c2:
+                    md_report = f"""# SEO Audit & ML Ranking Report
+- **URL**: {target_url}
+- **Target Keyword**: {target_keyword}
+- **Overall SEO Health Score**: {score_res['overall_seo_score']}/100
+- **Predicted Top-10 Probability**: {prediction['top_10_percentage']}%
+- **Search Intent**: {intent_res['intent']} ({int(intent_res['confidence']*100)}%)
+
+## Top Prioritized Actions:
+"""
+                    for a in actions:
+                        md_report += f"\n- **[Rank #{a['rank']}] {a['title']}** (Impact: +{a['expected_impact_pct']}%, Effort: {a['effort']})\n  _{a['description']}_\n"
+
+                    st.download_button(
+                        label="📄 Download Summary Report (Markdown)",
+                        data=md_report,
+                        file_name=f"seo_audit_{target_keyword.replace(' ', '_')}.md",
+                        mime="text/markdown",
+                        use_container_width=True
+                    )
+
 # =========================================================
 # TAB 2: NLP Search Intent Classifier
 # =========================================================
