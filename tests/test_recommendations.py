@@ -6,10 +6,11 @@ License: MIT
 """
 
 import pytest
-import pytest_asyncio
-from src.recommendations.prioritizer import RecommendationPrioritizer
-from src.recommendations.ai_analyst import AISEOAnalyst
+
 from src.nlp.semantic_matcher import SemanticMatcher
+from src.recommendations.ai_analyst import AISEOAnalyst
+from src.recommendations.prioritizer import RecommendationPrioritizer
+
 
 def test_recommendation_prioritizer_full_coverage():
     prioritizer = RecommendationPrioritizer()
