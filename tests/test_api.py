@@ -7,7 +7,7 @@ client = TestClient(app)
 def test_health_endpoint():
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "healthy"}
+    assert response.json()["status"] == "healthy"
 
 def test_intent_classify_api():
     payload = {"keywords": ["what is machine learning", "buy vps hosting cheap"]}

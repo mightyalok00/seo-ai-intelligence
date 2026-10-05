@@ -1,3 +1,14 @@
+"""
+FastAPI Main Application Entrypoint.
+
+This module initializes the FastAPI REST backend, mounts all modular sub-routers,
+configures secure CORS middleware, and handles lifecycle database startup hooks.
+
+Author: Alok Agarwal (mightyalok00)
+License: MIT
+"""
+
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -13,27 +24,41 @@ from api.routes.reports import router as reports_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: initialize database tables
+    """Application lifespan context for startup and shutdown event management."""
+    # Initialize SQLite/PostgreSQL schema tables
     init_db()
     yield
 
 app = FastAPI(
-    title="SEO-AI-MLOps Intelligence Platform",
-    description="Machine Learning & AI Platform for SERP Ranking Prediction, NLP Search Intent, and Prioritized SEO Decisions.",
+    title="SEO-AI-MLOps Intelligence Platform API",
+    description="Production REST API for SERP Ranking Prediction, NLP Search Intent, TreeSHAP Explainability, and ROI Prioritization.",
     version="1.0.0",
     lifespan=lifespan
 )
 
-# Enable CORS for frontend clients
+# Secure CORS Middleware Configuration
+ALLOWED_ORIGINS = [
+    "http://localhost:8501",
+    "http://127.0.0.1:8501",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+]
+
+# Allow custom environment overrides if specified
+custom_origins = os.getenv("ALLOWED_ORIGINS", "")
+if custom_origins:
+    ALLOWED_ORIGINS.extend([o.strip() for o in custom_origins.split(",") if o.strip()])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
-# Register routers
+# Register modular sub-routers
 app.include_router(crawl_router, prefix="/api/v1")
 app.include_router(intent_router, prefix="/api/v1")
 app.include_router(clustering_router, prefix="/api/v1")
@@ -43,16 +68,19 @@ app.include_router(reports_router, prefix="/api/v1")
 
 @app.get("/", tags=["Health"])
 async def root():
+    """Root health and discovery endpoint."""
     return {
         "platform": "SEO-AI-MLOps Intelligence Platform",
         "status": "operational",
         "version": "1.0.0",
-        "docs_url": "/docs"
+        "documentation": "/docs",
+        "openapi_spec": "/openapi.json"
     }
 
 @app.get("/health", tags=["Health"])
 async def health_check():
-    return {"status": "healthy"}
+    """Liveness probe for container orchestrators."""
+    return {"status": "healthy", "service": "seo-ai-mlops-backend"}
 
 if __name__ == "__main__":
     import uvicorn
