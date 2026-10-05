@@ -1,7 +1,8 @@
-import re
-from typing import List, Dict, Any, Set
+from typing import Any, Dict, List
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
 
 class SemanticMatcher:
     """Calculates semantic text relevance, entity coverage, and content gaps."""

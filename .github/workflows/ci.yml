@@ -8,17 +8,17 @@ on:
 
 jobs:
   test-and-validate:
-    name: Build, Lint & Test Pipeline
+    name: Lint, Test & Validate (Python 3.12)
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Codebase
       uses: actions/checkout@v4
 
-    - name: Set up Python 3.11
+    - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: "3.12"
         cache: "pip"
 
     - name: Install Pinned Dependencies
@@ -26,13 +26,21 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Test Suite (Pytest)
+    - name: Run Ruff Linting & Code Quality Checks
       run: |
-        pytest -v --maxfail=1
+        ruff check src/ api/ tests/ scripts/
 
-    - name: Validate GSC Ingestion Pipeline
+    - name: Run Pytest Suite with Coverage Reporting
       run: |
-        python -c "from src.models.gsc_pipeline import GSCDataPipeline; p = GSCDataPipeline(); metrics = p.train_on_gsc_data(); print('GSC Pipeline Validation Passed:', metrics)"
+        pytest -v --cov=src --cov=api --cov-report=term-missing --maxfail=1
+
+    - name: Validate Deterministic Benchmark Reproduction
+      run: |
+        python scripts/reproduce_benchmarks.py
+
+    - name: Validate Live Integration Pipeline
+      run: |
+        python scripts/test_live_pipeline.py
 
     - name: Build Docker Container
       run: |

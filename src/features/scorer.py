@@ -9,7 +9,8 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 class SEOScorer:
     """

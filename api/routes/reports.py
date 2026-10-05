@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from src.utils.database import get_db, CrawledPage, SEOPrediction
+
+from src.utils.database import SEOPrediction, get_db
 
 router = APIRouter(prefix="/reports", tags=["History & Reports"])
 

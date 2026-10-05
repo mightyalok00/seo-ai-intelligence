@@ -5,17 +5,17 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-import os
 import pickle
 import warnings
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
+
 from src.utils.config import settings
 
 INTENT_CLASSES = ["Informational", "Commercial", "Transactional", "Navigational"]

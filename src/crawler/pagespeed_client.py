@@ -1,6 +1,9 @@
+from typing import Any, Dict, Optional
+
 import httpx
-from typing import Dict, Any, Optional
+
 from src.utils.config import settings
+
 
 class PageSpeedClient:
     """Client for Google PageSpeed Insights API with heuristic fallback."""

@@ -5,10 +5,8 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-import pytest
-import json
-from pathlib import Path
 from scripts.reproduce_benchmarks import run_reproduction_pipeline
+
 
 def test_reproduction_manifest_generation():
     manifest = run_reproduction_pipeline()

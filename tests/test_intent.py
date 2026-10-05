@@ -1,6 +1,6 @@
-import pytest
 from src.nlp.intent_classifier import SearchIntentClassifier
 from src.nlp.keyword_clustering import KeywordClusterer
+
 
 def test_intent_classifier():
     clf = SearchIntentClassifier()

@@ -10,11 +10,13 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-import os
 import json
+from typing import Any, Dict, List, Optional
+
 import httpx
-from typing import Dict, Any, List, Optional
+
 from src.utils.config import settings
+
 
 class AISEOAnalyst:
     """

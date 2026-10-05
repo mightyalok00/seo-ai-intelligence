@@ -1,16 +1,17 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
+from api.schemas import AnalyzeUrlRequest, CrawlRequest
 from src.crawler.async_crawler import SEOCrawler
 from src.features.extractor import SEOFeatureExtractor
 from src.features.scorer import SEOScorer
+from src.models.ctr_forecaster import CTRForecaster
+from src.models.ranking_predictor import RankingPredictor
 from src.nlp.intent_classifier import SearchIntentClassifier
 from src.nlp.semantic_matcher import SemanticMatcher
-from src.models.ranking_predictor import RankingPredictor
-from src.models.ctr_forecaster import CTRForecaster
-from src.recommendations.prioritizer import RecommendationPrioritizer
 from src.recommendations.ai_analyst import AISEOAnalyst
-from src.utils.database import get_db, CrawledPage, SEOPrediction
-from api.schemas import CrawlRequest, AnalyzeUrlRequest
+from src.recommendations.prioritizer import RecommendationPrioritizer
+from src.utils.database import CrawledPage, SEOPrediction, get_db
 
 router = APIRouter(prefix="/crawl", tags=["Crawler & Technical Auditing"])
 

@@ -1,6 +1,6 @@
-import pytest
 from src.features.extractor import SEOFeatureExtractor
 from src.features.scorer import SEOScorer
+
 
 def test_feature_extractor():
     extractor = SEOFeatureExtractor()

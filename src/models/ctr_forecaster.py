@@ -1,4 +1,4 @@
-from typing import Dict, Any, List
+from typing import Any, Dict
 
 # Industry benchmark organic CTR by Google SERP rank position
 BENCHMARK_CTR_MAP = {

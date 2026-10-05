@@ -5,28 +5,28 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-import os
 import json
 import math
 import warnings
-import numpy as np
-import pandas as pd
 from pathlib import Path
-from typing import Dict, Any, Tuple, List
+from typing import Any, Dict
+
+import pandas as pd
 
 # Suppress upstream numpy / joblib deprecation notices
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 
-from sklearn.model_selection import train_test_split
+import xgboost as xgb
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, brier_score_loss, f1_score, precision_score, recall_score, roc_auc_score
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score, accuracy_score, brier_score_loss
 
-import xgboost as xgb
+from src.models.synthetic_data import FEATURE_COLUMNS, SEODatasetGenerator
 from src.utils.config import settings
-from src.models.synthetic_data import SEODatasetGenerator, FEATURE_COLUMNS
+
 
 def sanitize_float(val, default: float = 0.0) -> float:
     """Safely converts floats, replacing NaNs and Infs for JSON compliance."""

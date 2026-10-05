@@ -1,5 +1,5 @@
-import os
 from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     HOST: str = "0.0.0.0"
     PORT: int = 8000
+    RANDOM_SEED: int = 42
 
     # Database
     DATABASE_URL: str = f"sqlite:///{BASE_DIR / 'data' / 'seo_platform.db'}"

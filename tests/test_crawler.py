@@ -1,6 +1,7 @@
 import pytest
-import pytest_asyncio
+
 from src.crawler.async_crawler import SEOCrawler
+
 
 @pytest.mark.asyncio
 async def test_crawler_parsing():

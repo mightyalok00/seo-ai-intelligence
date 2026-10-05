@@ -1,7 +1,8 @@
 from fastapi import APIRouter
-from src.recommendations.prioritizer import RecommendationPrioritizer
-from src.recommendations.ai_analyst import AISEOAnalyst
+
 from api.schemas import RecommendationRequest
+from src.recommendations.ai_analyst import AISEOAnalyst
+from src.recommendations.prioritizer import RecommendationPrioritizer
 
 router = APIRouter(prefix="/recommendations", tags=["Action Prioritization & AI Analyst"])
 

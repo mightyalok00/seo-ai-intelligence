@@ -1,6 +1,7 @@
 from fastapi import APIRouter
-from src.nlp.keyword_clustering import KeywordClusterer
+
 from api.schemas import KeywordClusteringRequest
+from src.nlp.keyword_clustering import KeywordClusterer
 
 router = APIRouter(prefix="/keywords", tags=["Keyword Clustering"])
 

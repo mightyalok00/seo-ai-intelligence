@@ -10,8 +10,8 @@ License: MIT
 """
 
 import re
-from urllib.parse import urlparse
-from typing import Dict, Any, List
+from typing import Any, Dict
+
 
 class SEOFeatureExtractor:
     """

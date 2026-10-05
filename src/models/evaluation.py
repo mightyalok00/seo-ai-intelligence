@@ -12,20 +12,21 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-from typing import Dict, Any, Tuple, List
+from typing import Any, Dict, List
+
 import numpy as np
 import pandas as pd
 from sklearn.calibration import calibration_curve
 from sklearn.metrics import (
-    roc_curve,
     auc,
-    precision_recall_curve,
     average_precision_score,
-    confusion_matrix,
     brier_score_loss,
-    classification_report
+    confusion_matrix,
+    precision_recall_curve,
+    roc_curve,
 )
 from sklearn.model_selection import TimeSeriesSplit
+
 
 class ModelEvaluator:
     """

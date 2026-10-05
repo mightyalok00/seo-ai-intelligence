@@ -11,12 +11,15 @@ License: MIT
 """
 
 import re
+from typing import Any, Dict, Optional
+from urllib.parse import urljoin, urlparse
+
 import httpx
-from bs4 import BeautifulSoup
 import trafilatura
-from urllib.parse import urlparse, urljoin
-from typing import Dict, Any, List, Optional
+from bs4 import BeautifulSoup
+
 from src.crawler.pagespeed_client import PageSpeedClient
+
 
 class SEOCrawler:
     """

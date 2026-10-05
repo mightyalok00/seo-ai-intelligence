@@ -9,7 +9,8 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
 
 class RecommendationPrioritizer:
     """

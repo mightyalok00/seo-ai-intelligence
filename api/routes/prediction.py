@@ -1,7 +1,8 @@
 from fastapi import APIRouter
-from src.models.ranking_predictor import RankingPredictor
-from src.features.scorer import SEOScorer
+
 from api.schemas import RankingPredictionRequest
+from src.features.scorer import SEOScorer
+from src.models.ranking_predictor import RankingPredictor
 
 router = APIRouter(prefix="/predict", tags=["ML Ranking Prediction"])
 

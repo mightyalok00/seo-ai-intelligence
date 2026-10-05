@@ -1,6 +1,7 @@
 from fastapi import APIRouter
-from src.nlp.intent_classifier import SearchIntentClassifier
+
 from api.schemas import IntentClassificationRequest
+from src.nlp.intent_classifier import SearchIntentClassifier
 
 router = APIRouter(prefix="/intent", tags=["NLP & Search Intent"])
 intent_clf = SearchIntentClassifier()

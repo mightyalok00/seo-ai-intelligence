@@ -2,8 +2,8 @@
 Live Integration Test for SEO-AI-MLOps End-to-End Pipeline.
 """
 
-import sys
 import asyncio
+import sys
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -13,11 +13,11 @@ if str(ROOT_DIR) not in sys.path:
 from src.crawler.async_crawler import SEOCrawler
 from src.features.extractor import SEOFeatureExtractor
 from src.features.scorer import SEOScorer
-from src.nlp.intent_classifier import SearchIntentClassifier
 from src.models.ranking_predictor import RankingPredictor
-from src.models.ctr_forecaster import CTRForecaster
-from src.recommendations.prioritizer import RecommendationPrioritizer
+from src.nlp.intent_classifier import SearchIntentClassifier
 from src.recommendations.ai_analyst import AISEOAnalyst
+from src.recommendations.prioritizer import RecommendationPrioritizer
+
 
 async def main():
     print("=" * 70)

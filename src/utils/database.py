@@ -1,6 +1,8 @@
 import datetime
-from sqlalchemy import create_engine, Column, Integer, String, Float, Text, Boolean, DateTime, JSON
+
+from sqlalchemy import JSON, Boolean, Column, DateTime, Float, Integer, String, Text, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+
 from src.utils.config import settings
 
 engine = create_engine(settings.DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {})

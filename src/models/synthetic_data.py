@@ -9,9 +9,11 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
+
 from src.utils.config import settings
 
 FEATURE_COLUMNS = [

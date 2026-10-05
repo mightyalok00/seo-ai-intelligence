@@ -5,11 +5,12 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-import pytest
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
+
 from src.models.evaluation import ModelEvaluator
+
 
 def test_calibration_curve():
     y_true = np.array([0, 0, 0, 1, 1, 1, 0, 1, 1, 0])

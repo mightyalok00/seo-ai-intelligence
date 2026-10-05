@@ -9,18 +9,18 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-import os
 from pathlib import Path
-from typing import Dict, Any, Tuple, Optional
+from typing import Any, Dict, Optional
+
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score, brier_score_loss
 import xgboost as xgb
-import joblib
+from sklearn.metrics import brier_score_loss, f1_score, precision_score, recall_score, roc_auc_score
+from sklearn.model_selection import train_test_split
 
-from src.utils.config import settings
 from src.models.synthetic_data import FEATURE_COLUMNS
+from src.utils.config import settings
+
 
 class GSCDataPipeline:
     """
@@ -52,10 +52,10 @@ class GSCDataPipeline:
 
         queries = np.random.choice(sample_queries, size=n)
         impressions = np.random.exponential(scale=1800, size=n) + 50
-        
+
         # Real-world position distributions (1 to 50)
         positions = np.random.gamma(shape=2.5, scale=4.5, size=n).clip(1.0, 50.0)
-        
+
         # Power-law CTR decaying with position
         base_ctr = 0.30 / (positions ** 1.1)
         ctr_noise = np.random.normal(0, 0.015, size=n)

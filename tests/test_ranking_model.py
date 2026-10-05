@@ -1,6 +1,6 @@
-import pytest
-from src.models.ranking_predictor import RankingPredictor
 from src.models.ctr_forecaster import CTRForecaster
+from src.models.ranking_predictor import RankingPredictor
+
 
 def test_ranking_predictor():
     predictor = RankingPredictor()

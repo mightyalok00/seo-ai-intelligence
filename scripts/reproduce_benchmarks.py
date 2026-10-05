@@ -13,8 +13,8 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-import sys
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -23,10 +23,9 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from src.models.synthetic_data import SEODatasetGenerator
-from src.models.ranking_predictor import RankingPredictor
 from src.models.gsc_pipeline import GSCDataPipeline
-from src.models.evaluation import ModelEvaluator
+from src.models.ranking_predictor import RankingPredictor
+
 
 def run_reproduction_pipeline() -> dict:
     print("=" * 75)

@@ -9,11 +9,12 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-import numpy as np
-from typing import List, Dict, Any
-from sklearn.feature_extraction.text import TfidfVectorizer
+from typing import Any, Dict, List
+
 from sklearn.cluster import AgglomerativeClustering, KMeans
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import silhouette_score
+
 
 class KeywordClusterer:
     """

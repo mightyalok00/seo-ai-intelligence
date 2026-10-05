@@ -5,9 +5,10 @@ Author: Alok Agarwal (mightyalok00)
 License: MIT
 """
 
-import pytest
 from pathlib import Path
+
 from src.models.gsc_pipeline import GSCDataPipeline
+
 
 def test_gsc_data_pipeline_generation(tmp_path: Path):
     pipeline = GSCDataPipeline(output_dir=tmp_path)
