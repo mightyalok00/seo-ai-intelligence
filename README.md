@@ -1,8 +1,8 @@
 # 🚀 SEO-AI-MLOps: Machine Learning Powered SEO Intelligence & Ranking Prediction Platform
 
 [![CI Pipeline](https://github.com/mightyalok00/seo-ai-intelligence/actions/workflows/ci.yml/badge.svg)](https://github.com/mightyalok00/seo-ai-intelligence/actions/workflows/ci.yml)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688.svg)](https://fastapi.tiangolo.com)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.116.2-009688.svg)](https://fastapi.tiangolo.com)
 [![XGBoost](https://img.shields.io/badge/XGBoost-3.4.1-red.svg)](https://xgboost.readthedocs.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -123,7 +123,7 @@ cd seo-ai-intelligence
 
 python -m venv venv
 # Windows:
-.\venv\Scripts\activate
+.\\venv\\Scripts\\activate
 # Linux/macOS:
 source venv/bin/activate
 
@@ -151,6 +151,20 @@ streamlit run dashboard/app.py
 uvicorn api.main:app --reload --port 8000
 ```
 *Interactive Swagger Documentation:* **`http://localhost:8000/docs`**
+
+---
+
+## ☁️ Streamlit Community Cloud Deployment
+
+Use the following deployment settings:
+
+- **Repository:** `mightyalok00/seo-ai-intelligence`
+- **Branch:** `main`
+- **Main file path:** `dashboard/app.py`
+- **Python:** `3.12`
+- **Secrets:** optional; add API keys only when using the corresponding GenAI/PageSpeed integrations.
+
+The project pins Streamlit and FastAPI to compatible versions in `requirements.txt`. Streamlit Community Cloud will detect dependency changes committed to GitHub and re-resolve the environment automatically.
 
 ---
 
