@@ -6,7 +6,7 @@
 [![XGBoost](https://img.shields.io/badge/XGBoost-3.4.1-red.svg)](https://xgboost.readthedocs.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **A production-grade Machine Learning and Generative AI platform that models search ranking signals, classifies search intent, extracts competitor content gaps, and computes an ROI-prioritized action plan (Impact vs. Effort) for organic growth.**
+> **A research-grade Machine Learning and Generative AI platform that models search ranking signals, classifies search intent, extracts competitor content gaps, and computes an ROI-prioritized action plan (Impact vs. Effort) for organic search growth.**
 
 ---
 
@@ -77,18 +77,24 @@
 
 ---
 
-## 📊 Model Evaluation & Dual Benchmark Comparison
+## 📊 Dual Benchmark Provenance & Validation Results
 
-To ensure scientific rigor and data transparency, models are evaluated across both **empirical benchmark distributions** and **observational Google Search Console (GSC) extracts**:
+To ensure scientific rigor and transparent provenance, all results are deterministic and reproducible via `python scripts/reproduce_benchmarks.py`:
 
-### Benchmark 1: Controlled SERP Benchmark Dataset (N=3,500)
+### Benchmark 1: Controlled SERP Parameterized Benchmark (N=3,500)
+* **Dataset Provenance:** Statistically parameterized SERP distribution modeling empirical search feature decays (`src/models/synthetic_data.py`).
+* **Validation Strategy:** Stratified 80/20 train/test holdout with random_seed=42.
+
 | Model Architecture | ROC-AUC | F1 Score | Precision | Recall | Accuracy | Brier Score Loss |
 |---|---|---|---|---|---|---|
-| **XGBoost Classifier (Production)** | **0.962** | **0.894** | **0.901** | **0.887** | **89.8%** | **0.076** |
-| **Random Forest (Ensemble)** | 0.948 | 0.872 | 0.885 | 0.860 | 87.5% | 0.088 |
-| **Logistic Regression (Baseline)** | 0.912 | 0.835 | 0.840 | 0.830 | 83.7% | 0.118 |
+| **XGBoost Classifier (Production)** | **0.969** | **0.932** | **0.923** | **0.942** | **91.3%** | **0.068** |
+| **Logistic Regression (L2 Baseline)** | 0.981 | 0.939 | 0.932 | 0.946 | 92.1% | 0.052 |
+| **Random Forest (Ensemble)** | 0.943 | 0.898 | 0.853 | 0.949 | 86.3% | 0.111 |
 
-### Benchmark 2: Observational Google Search Console (GSC) Performance Extract (N=1,200)
+### Benchmark 2: Observational Google Search Console (GSC) Extract (N=1,200)
+* **Dataset Provenance:** Real-world anonymized search queries, impressions, CTR, and SERP positions (`src/models/gsc_pipeline.py`).
+* **Ground-Truth Target:** `is_top_10 = (avg_position <= 10.0)`.
+
 | Model Architecture | ROC-AUC | F1 Score | Precision | Recall (Top 10) | Brier Score Loss |
 |---|---|---|---|---|---|
 | **XGBoost (Fine-Tuned on GSC Logs)** | **0.760** | **0.794** | **0.691** | **93.5%** | **0.173** |
@@ -97,12 +103,14 @@ To ensure scientific rigor and data transparency, models are evaluated across bo
 
 ---
 
-## 🔬 Scientific Methodology & Rigor
+## 🔬 1-Command Benchmark Reproduction
 
-> [!NOTE]
-> **Methodological Positioning:** This platform does not claim to decode Google's proprietary search ranking algorithm. Rather, it **models observable search ranking propensity** from structural on-page, semantic, authority, and Core Web Vitals signals.
-> 
-> The architecture incorporates **native TreeSHAP attribution**, **reliability calibration curves**, and **temporal cross-validation** (`src/models/evaluation.py`) to prevent lookahead bias in chronological search ranking logs.
+Execute the automated reproduction script to re-train all models, compute calibration curves, and generate the official experiment manifest:
+
+```bash
+python scripts/reproduce_benchmarks.py
+```
+*Manifest output:* [`experiments/benchmark_reproduction_manifest.json`](file:///e:/Seo/experiments/benchmark_reproduction_manifest.json)
 
 ---
 
@@ -130,19 +138,32 @@ cp .env.example .env
 
 ---
 
-## 🚀 Running the Platform
+## 🚀 Running Locally
 
-### Start the Streamlit Dashboard
+### Option A: Start Streamlit Dashboard
 ```bash
 streamlit run dashboard/app.py
 ```
 *Access in browser:* **`http://localhost:8501`**
 
-### Start the FastAPI REST Server
+### Option B: Start FastAPI REST Server
 ```bash
 uvicorn api.main:app --reload --port 8000
 ```
 *Interactive Swagger Documentation:* **`http://localhost:8000/docs`**
+
+---
+
+## 🐳 Docker & Docker Compose Deployment
+
+Run both the FastAPI Backend (`port 8000`) and the Streamlit Dashboard (`port 8501`) as isolated microservices:
+
+```bash
+docker compose up --build -d
+```
+
+* **FastAPI Backend:** `http://localhost:8000/docs`
+* **Streamlit Dashboard:** `http://localhost:8501`
 
 ---
 
@@ -177,20 +198,11 @@ curl -X POST "http://localhost:8000/api/v1/intent/classify" \
 
 ---
 
-## 🧪 Automated Testing
+## 🧪 Automated Testing Suite
 
-Run the automated test suite covering unit tests, GSC pipelines, calibration, and API integration tests:
+Run the full automated test suite covering unit tests, GSC pipelines, calibration, and API integration tests:
 ```bash
 pytest -v
-```
-
----
-
-## 🐳 Docker Containerization
-
-```bash
-docker build -t seo-ai-intelligence .
-docker run -p 8000:8000 -p 8501:8501 seo-ai-intelligence
 ```
 
 ---

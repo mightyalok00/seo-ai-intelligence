@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # =========================================================
+  # 1. FastAPI REST Backend Service
+  # =========================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: seo-ai-api
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - HOST=0.0.0.0
+      - PORT=8000
+      - ALLOWED_ORIGINS=http://localhost:8501,http://127.0.0.1:8501
+    volumes:
+      - ./data:/app/data
+      - ./models/saved:/app/models/saved
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # =========================================================
+  # 2. Streamlit Interactive Intelligence Dashboard
+  # =========================================================
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: seo-ai-dashboard
+    command: streamlit run dashboard/app.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    volumes:
+      - ./data:/app/data
+      - ./models/saved:/app/models/saved
+    restart: unless-stopped

@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0.0",
+  "reproduction_timestamp": "2026-10-05T07:59:50Z",
+  "environment": {
+    "python_version": "3.14.7",
+    "random_seed": 42
+  },
+  "benchmarks": {
+    "benchmark_1_controlled_serp": {
+      "dataset_name": "Controlled SERP Parameterized Benchmark Dataset v1",
+      "sample_count": 3500,
+      "train_samples": 2800,
+      "test_samples": 700,
+      "feature_count": 13,
+      "split_strategy": "Stratified train_test_split (80/20) with random_seed=42",
+      "leakage_controls": "Strict out-of-fold feature normalization and separate test holdout",
+      "models": {
+        "LogisticRegression": {
+          "roc_auc": 0.9808,
+          "f1": 0.939,
+          "precision": 0.9317,
+          "recall": 0.9463,
+          "accuracy": 0.9214,
+          "brier_loss": 0.0521
+        },
+        "RandomForest": {
+          "roc_auc": 0.9428,
+          "f1": 0.8983,
+          "precision": 0.8531,
+          "recall": 0.9485,
+          "accuracy": 0.8629,
+          "brier_loss": 0.111
+        },
+        "XGBoost": {
+          "roc_auc": 0.9687,
+          "f1": 0.9324,
+          "precision": 0.9232,
+          "recall": 0.9418,
+          "accuracy": 0.9129,
+          "brier_loss": 0.0679
+        }
+      },
+      "best_model": "XGBoost"
+    },
+    "benchmark_2_gsc_observational": {
+      "dataset_name": "Google Search Console (GSC) Observational Search Extract",
+      "sample_count": 1200,
+      "train_samples": 900,
+      "test_samples": 300,
+      "target_definition": "Binary ground-truth is_top_10 = (avg_position <= 10.0)",
+      "evaluation_metrics": {
+        "dataset_source": "Google Search Console (GSC) Performance Extract",
+        "sample_count": 1200,
+        "train_samples": 900,
+        "test_samples": 300,
+        "roc_auc": 0.76,
+        "f1_score": 0.7944,
+        "precision": 0.6908,
+        "recall": 0.9346,
+        "brier_loss": 0.1732
+      }
+    }
+  }
+}
