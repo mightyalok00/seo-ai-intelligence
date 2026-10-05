@@ -1,6 +1,7 @@
 # 🚀 SEO-AI-MLOps: Machine Learning Powered SEO Intelligence & Ranking Prediction Platform
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B.svg)](https://seo-ai-intelligence.streamlit.app/)\n[![CI Pipeline](https://github.com/mightyalok00/seo-ai-intelligence/actions/workflows/ci.yml/badge.svg)](https://github.com/mightyalok00/seo-ai-intelligence/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B.svg)](https://seo-ai-intelligence.streamlit.app/)
+[![CI Pipeline](https://github.com/mightyalok00/seo-ai-intelligence/actions/workflows/ci.yml/badge.svg)](https://github.com/mightyalok00/seo-ai-intelligence/actions/workflows/ci.yml)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.116.2-009688.svg)](https://fastapi.tiangolo.com)
 [![XGBoost](https://img.shields.io/badge/XGBoost-3.4.1-red.svg)](https://xgboost.readthedocs.io/)
@@ -114,7 +115,23 @@ python scripts/reproduce_benchmarks.py
 
 ---
 
-## 🌐 Live Demo\n\n**Try the deployed SEO AI Intelligence dashboard:**\n\n👉 https://seo-ai-intelligence.streamlit.app/\n\nThe live application runs the Streamlit dashboard from `dashboard/app.py`.\n\n---\n\n## 🛠️ Quickstart Installation
+## 🌐 Live Demo
+
+**Try the deployed SEO AI Intelligence dashboard:**
+
+👉 **https://seo-ai-intelligence.streamlit.app/**
+
+The live application runs the Streamlit dashboard from `dashboard/app.py`.
+
+### Production API
+
+- **Swagger UI:** `http://localhost:8000/docs`
+- **OpenAPI JSON:** `http://localhost:8000/openapi.json`
+- **Health check:** `http://localhost:8000/health`
+
+---
+
+## 🛠️ Quickstart Installation
 
 ### 1. Clone & Setup
 ```bash
@@ -162,7 +179,9 @@ Use the following deployment settings:
 - **Branch:** `main`
 - **Main file path:** `dashboard/app.py`
 - **Python:** `3.12`
-- **Secrets:** optional; add API keys only when using the corresponding GenAI/PageSpeed integrations.\n\n**Live app:** https://seo-ai-intelligence.streamlit.app/
+- **Secrets:** optional; add API keys only when using the corresponding GenAI/PageSpeed integrations.
+
+**Live app:** https://seo-ai-intelligence.streamlit.app/
 
 The project pins Streamlit and FastAPI to compatible versions in `requirements.txt`. Streamlit Community Cloud will detect dependency changes committed to GitHub and re-resolve the environment automatically.
 
@@ -218,6 +237,43 @@ Run the full automated test suite covering unit tests, GSC pipelines, calibratio
 ```bash
 pytest -v
 ```
+
+
+---
+
+## 🧭 Production Architecture
+
+The platform is split into a presentation layer, API layer, asynchronous acquisition layer, ML/NLP intelligence layer, explainability layer, and GenAI recommendation layer.
+
+```mermaid
+flowchart TD
+    U[User / SEO Analyst] --> S[Streamlit Dashboard]
+    U --> F[FastAPI REST API]
+    S --> C[Async Crawler + PageSpeed]
+    F --> C
+    C --> FE[SEO Feature Engineering]
+    FE --> NLP[NLP Intent + Semantic Clustering]
+    FE --> ML[Ranking Prediction]
+    ML --> SHAP[TreeSHAP Explainability]
+    NLP --> GAP[Competitor Content Gap]
+    SHAP --> ROI[Impact / Effort Prioritizer]
+    GAP --> ROI
+    ROI --> GEN[GenAI SEO Analyst]
+    GEN --> OUT[Reports + Recommendations]
+```
+
+### Observability & Validation
+
+- `/health` provides a lightweight liveness probe for deployment checks.
+- CI runs Ruff, pytest with coverage, deterministic benchmark reproduction, live-pipeline validation, and Docker builds.
+- Benchmark artifacts are versioned under `experiments/` for reproducibility.
+- FastAPI exposes OpenAPI/Swagger documentation automatically.
+
+## 📸 Demo
+
+**[Open SEO-AI Intelligence Live Demo](https://seo-ai-intelligence.streamlit.app/)**
+
+For API exploration, run the backend locally and open **http://localhost:8000/docs**.
 
 ---
 
