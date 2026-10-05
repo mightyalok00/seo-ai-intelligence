@@ -1,6 +1,6 @@
 {
   "manifest_version": "1.0.0",
-  "reproduction_timestamp": "2026-10-05T08:17:53Z",
+  "reproduction_timestamp": "2026-10-05T08:20:54Z",
   "environment": {
     "python_version": "3.14.7",
     "random_seed": 42
