@@ -26,7 +26,8 @@ requests==2.34.2
 urllib3==2.8.0
 
 # Backend Web API Framework
-fastapi==0.115.0
+# 0.116.2 is compatible with the Starlette range required by Streamlit 1.62.0.
+fastapi==0.116.2
 uvicorn==0.52.1
 pydantic==2.13.4
 pydantic-settings==2.15.0
