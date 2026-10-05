@@ -1,6 +1,6 @@
 # 🚀 SEO-AI-MLOps: Machine Learning Powered SEO Intelligence & Ranking Prediction Platform
 
-[![CI Pipeline](https://github.com/mightyalok00/seo-ai-intelligence/actions/workflows/ci.yml/badge.svg)](https://github.com/mightyalok00/seo-ai-intelligence/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B.svg)](https://seo-ai-intelligence.streamlit.app/)\n[![CI Pipeline](https://github.com/mightyalok00/seo-ai-intelligence/actions/workflows/ci.yml/badge.svg)](https://github.com/mightyalok00/seo-ai-intelligence/actions/workflows/ci.yml)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.116.2-009688.svg)](https://fastapi.tiangolo.com)
 [![XGBoost](https://img.shields.io/badge/XGBoost-3.4.1-red.svg)](https://xgboost.readthedocs.io/)
@@ -114,7 +114,7 @@ python scripts/reproduce_benchmarks.py
 
 ---
 
-## 🛠️ Quickstart Installation
+## 🌐 Live Demo\n\n**Try the deployed SEO AI Intelligence dashboard:**\n\n👉 https://seo-ai-intelligence.streamlit.app/\n\nThe live application runs the Streamlit dashboard from `dashboard/app.py`.\n\n---\n\n## 🛠️ Quickstart Installation
 
 ### 1. Clone & Setup
 ```bash
@@ -162,7 +162,7 @@ Use the following deployment settings:
 - **Branch:** `main`
 - **Main file path:** `dashboard/app.py`
 - **Python:** `3.12`
-- **Secrets:** optional; add API keys only when using the corresponding GenAI/PageSpeed integrations.
+- **Secrets:** optional; add API keys only when using the corresponding GenAI/PageSpeed integrations.\n\n**Live app:** https://seo-ai-intelligence.streamlit.app/
 
 The project pins Streamlit and FastAPI to compatible versions in `requirements.txt`. Streamlit Community Cloud will detect dependency changes committed to GitHub and re-resolve the environment automatically.
 
